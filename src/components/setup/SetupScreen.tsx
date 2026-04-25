@@ -36,31 +36,35 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Nommies</CardTitle>
-          <CardDescription>Enter player names to start the game</CardDescription>
+          <CardTitle className="text-4xl font-bold tracking-tight">Nommies</CardTitle>
+          <CardDescription className="text-sm">
+            7-round trick-taking score tracker
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-3">
+          <div className="space-y-2">
             {names.map((name, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-muted-foreground text-xs">
-                  Player {index + 1}
-                </Label>
+                <span className="w-7 h-10 shrink-0 flex items-center justify-center text-sm font-mono text-muted-foreground">
+                  {index + 1}
+                </span>
                 <Input
                   value={name}
                   onChange={(e) => updateName(index, e.target.value)}
                   placeholder={`Player ${index + 1}`}
                   onKeyDown={(e) => e.key === "Enter" && handleStart()}
+                  className="h-11 text-base"
                 />
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => removePlayer(index)}
                   disabled={names.length <= 2}
-                  className="shrink-0"
+                  className="shrink-0 h-11 w-11"
+                  aria-label={`Remove player ${index + 1}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -77,12 +81,16 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
               variant="outline"
               onClick={addPlayer}
               disabled={names.length >= 7}
-              className="w-full"
+              className="w-full h-11"
             >
               <Plus className="h-4 w-4 mr-1" />
               Add Player ({names.length}/7)
             </Button>
-            <Button onClick={handleStart} disabled={!canStart} className="w-full">
+            <Button
+              onClick={handleStart}
+              disabled={!canStart}
+              className="w-full h-12 text-base"
+            >
               Start Game
             </Button>
           </div>

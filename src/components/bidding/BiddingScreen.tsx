@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { GameState, cardsInRound, dealerIndex as getDealerIndex } from "@/types/game";
 import { getBiddingOrder, forbiddenBidForLastBidder } from "@/lib/gameLogic";
+import { cn } from "@/lib/utils";
 import { RoundHeader } from "./RoundHeader";
 import { BidInput } from "./BidInput";
 
@@ -14,7 +15,7 @@ interface BiddingScreenProps {
 }
 
 export function BiddingScreen({ gameState, onSubmitBids }: BiddingScreenProps) {
-  const { players, currentRoundIndex, rounds } = gameState;
+  const { players, currentRoundIndex } = gameState;
   const numPlayers = players.length;
   const cards = cardsInRound(currentRoundIndex);
   const dealer = getDealerIndex(currentRoundIndex, numPlayers);
@@ -58,20 +59,66 @@ export function BiddingScreen({ gameState, onSubmitBids }: BiddingScreenProps) {
     onSubmitBids(parsedBids as number[]);
   };
 
+  const enteredBids = parsedBids.filter((b): b is number => b !== null);
+  const bidTotal = enteredBids.reduce((sum, b) => sum + b, 0);
+  const filledCount = enteredBids.length;
+  const allBidsEntered = filledCount === numPlayers;
+  const diff = bidTotal - cards;
+  const totalState: "under" | "exact" | "over" =
+    diff < 0 ? "under" : diff === 0 ? "exact" : "over";
+
+  const totalLabel =
+    !allBidsEntered
+      ? `${numPlayers - filledCount} bid${numPlayers - filledCount === 1 ? "" : "s"} remaining`
+      : totalState === "exact"
+        ? "Total equals tricks — invalid"
+        : totalState === "under"
+          ? `${Math.abs(diff)} under (someone will lose tricks)`
+          : `${diff} over (someone will lose tricks)`;
+
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-lg mx-auto">
+    <div className="min-h-screen p-3 pb-24">
+      <div className="max-w-md mx-auto">
         <RoundHeader
           roundIndex={currentRoundIndex}
           dealerName={players[dealer]}
           numPlayers={numPlayers}
         />
 
+        <Card
+          className={cn(
+            "mb-3 border-2 transition-colors",
+            allBidsEntered && totalState === "exact" && "border-destructive/60 bg-destructive/5",
+            allBidsEntered && totalState !== "exact" && "border-emerald-500/40 bg-emerald-500/5",
+            !allBidsEntered && "border-dashed"
+          )}
+        >
+          <CardContent className="p-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                Total bids
+              </div>
+              <div className="text-[11px] text-muted-foreground leading-tight mt-0.5 truncate">
+                {totalLabel}
+              </div>
+            </div>
+            <div className="text-right shrink-0 font-mono tabular-nums">
+              <span
+                className={cn(
+                  "text-2xl font-bold",
+                  allBidsEntered && totalState === "exact" && "text-destructive",
+                  allBidsEntered && totalState !== "exact" && "text-emerald-600 dark:text-emerald-400"
+                )}
+              >
+                {bidTotal}
+              </span>
+              <span className="text-muted-foreground text-lg"> / {cards}</span>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Place Bids</CardTitle>
-          </CardHeader>
-          <CardContent className="divide-y">
+          <CardContent className="px-4 py-1 divide-y">
             {biddingOrder.map((pi, orderIndex) => {
               const isLastBidder = orderIndex === biddingOrder.length - 1;
               const computedForbidden = isLastBidder ? forbidden : null;
@@ -89,9 +136,18 @@ export function BiddingScreen({ gameState, onSubmitBids }: BiddingScreenProps) {
             })}
           </CardContent>
         </Card>
+      </div>
 
-        <div className="mt-4">
-          <Button onClick={handleSubmit} disabled={!isValid()} className="w-full">
+      <div
+        className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur p-3 sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:mt-4"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+      >
+        <div className="max-w-lg mx-auto">
+          <Button
+            onClick={handleSubmit}
+            disabled={!isValid()}
+            className="w-full h-12 text-base"
+          >
             Lock In Bids
           </Button>
         </div>
