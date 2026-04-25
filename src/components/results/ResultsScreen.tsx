@@ -6,15 +6,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { GameState, cardsInRound, dealerIndex as getDealerIndex } from "@/types/game";
 import { isResultsValid } from "@/lib/gameLogic";
 import { cn } from "@/lib/utils";
+import { EndGameDialog } from "@/components/EndGameDialog";
 import { RoundHeader } from "@/components/bidding/RoundHeader";
 import { HandsWonInput } from "./HandsWonInput";
 
 interface ResultsScreenProps {
   gameState: GameState;
   onSubmitResults: (handsWon: number[]) => void;
+  onEndGame: () => void;
 }
 
-export function ResultsScreen({ gameState, onSubmitResults }: ResultsScreenProps) {
+export function ResultsScreen({
+  gameState,
+  onSubmitResults,
+  onEndGame,
+}: ResultsScreenProps) {
   const { players, currentRoundIndex, rounds } = gameState;
   const numPlayers = players.length;
   const cards = cardsInRound(currentRoundIndex);
@@ -50,6 +56,10 @@ export function ResultsScreen({ gameState, onSubmitResults }: ResultsScreenProps
   return (
     <div className="min-h-screen p-3 pb-24">
       <div className="max-w-md mx-auto">
+        <div className="flex items-center justify-end mb-2">
+          <EndGameDialog onConfirm={onEndGame} />
+        </div>
+
         <RoundHeader
           roundIndex={currentRoundIndex}
           dealerName={players[dealer]}

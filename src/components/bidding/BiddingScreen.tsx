@@ -6,15 +6,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { GameState, cardsInRound, dealerIndex as getDealerIndex } from "@/types/game";
 import { getBiddingOrder, forbiddenBidForLastBidder } from "@/lib/gameLogic";
 import { cn } from "@/lib/utils";
+import { ChevronLeft } from "lucide-react";
+import { EndGameDialog } from "@/components/EndGameDialog";
 import { RoundHeader } from "./RoundHeader";
 import { BidInput } from "./BidInput";
 
 interface BiddingScreenProps {
   gameState: GameState;
   onSubmitBids: (bids: number[]) => void;
+  onBack: () => void;
+  onEndGame: () => void;
 }
 
-export function BiddingScreen({ gameState, onSubmitBids }: BiddingScreenProps) {
+export function BiddingScreen({
+  gameState,
+  onSubmitBids,
+  onBack,
+  onEndGame,
+}: BiddingScreenProps) {
   const { players, currentRoundIndex } = gameState;
   const numPlayers = players.length;
   const cards = cardsInRound(currentRoundIndex);
@@ -76,9 +85,25 @@ export function BiddingScreen({ gameState, onSubmitBids }: BiddingScreenProps) {
           ? `${Math.abs(diff)} under (someone will lose tricks)`
           : `${diff} over (someone will lose tricks)`;
 
+  const canGoBack = currentRoundIndex > 0;
+
   return (
     <div className="min-h-screen p-3 pb-24">
       <div className="max-w-md mx-auto">
+        <div className="flex items-center justify-between mb-2 -ml-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            disabled={!canGoBack}
+            className="h-9 px-2 text-muted-foreground"
+          >
+            <ChevronLeft className="h-4 w-4 mr-0.5" />
+            Scoreboard
+          </Button>
+          <EndGameDialog onConfirm={onEndGame} />
+        </div>
+
         <RoundHeader
           roundIndex={currentRoundIndex}
           dealerName={players[dealer]}

@@ -16,6 +16,7 @@ export function GameRoot() {
     submitResults,
     editRound,
     proceedToNextRound,
+    goBackToScoreboard,
     resetGame,
   } = useGameState();
 
@@ -34,11 +35,24 @@ export function GameRoot() {
   const { phase } = gameState;
 
   if (phase === "bidding") {
-    return <BiddingScreen gameState={gameState} onSubmitBids={submitBids} />;
+    return (
+      <BiddingScreen
+        gameState={gameState}
+        onSubmitBids={submitBids}
+        onBack={goBackToScoreboard}
+        onEndGame={resetGame}
+      />
+    );
   }
 
   if (phase === "results") {
-    return <ResultsScreen gameState={gameState} onSubmitResults={submitResults} />;
+    return (
+      <ResultsScreen
+        gameState={gameState}
+        onSubmitResults={submitResults}
+        onEndGame={resetGame}
+      />
+    );
   }
 
   if (phase === "scoreboard") {
@@ -47,6 +61,7 @@ export function GameRoot() {
         gameState={gameState}
         onProceed={proceedToNextRound}
         onEditRound={editRound}
+        onEndGame={resetGame}
       />
     );
   }

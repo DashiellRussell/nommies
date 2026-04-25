@@ -20,6 +20,7 @@ export interface UseGameStateReturn {
   submitResults: (handsWon: number[]) => void;
   editRound: (roundIndex: number, playerData: PlayerRoundData[]) => void;
   proceedToNextRound: () => void;
+  goBackToScoreboard: () => void;
   resetGame: () => void;
 }
 
@@ -105,6 +106,27 @@ export function useGameState(): UseGameStateReturn {
     persist({ ...gameState, phase: "bidding", currentRoundIndex: nextRoundIndex });
   }, [gameState, persist]);
 
+  const goBackToScoreboard = useCallback(() => {
+    if (!gameState) return;
+    if (gameState.phase !== "bidding") return;
+    if (gameState.currentRoundIndex <= 0) return;
+    const prevRoundIndex = gameState.currentRoundIndex - 1;
+    const updatedRounds = gameState.rounds.map((r, i) => {
+      if (i !== gameState.currentRoundIndex) return r;
+      return {
+        ...r,
+        status: "pending" as const,
+        playerData: r.playerData.map((pd) => ({ ...pd, bid: null, handsWon: null })),
+      };
+    });
+    persist({
+      ...gameState,
+      phase: "scoreboard",
+      currentRoundIndex: prevRoundIndex,
+      rounds: updatedRounds,
+    });
+  }, [gameState, persist]);
+
   const resetGame = useCallback(() => {
     clearGameState();
     setGameState(null);
@@ -118,6 +140,7 @@ export function useGameState(): UseGameStateReturn {
     submitResults,
     editRound,
     proceedToNextRound,
+    goBackToScoreboard,
     resetGame,
   };
 }

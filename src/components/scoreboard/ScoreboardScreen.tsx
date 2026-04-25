@@ -3,18 +3,25 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GameState, PlayerRoundData, TRUMP_SUITS, SUIT_SYMBOLS, SUIT_COLORS, cardsInRound } from "@/types/game";
+import { GameState, PlayerRoundData, TRUMP_SUITS, SUIT_SYMBOLS, SUIT_COLORS } from "@/types/game";
 import { ScoreTable } from "./ScoreTable";
 import { EditRoundDialog } from "./EditRoundDialog";
+import { EndGameDialog } from "@/components/EndGameDialog";
 import { Pencil } from "lucide-react";
 
 interface ScoreboardScreenProps {
   gameState: GameState;
   onProceed: () => void;
   onEditRound: (roundIndex: number, playerData: PlayerRoundData[]) => void;
+  onEndGame: () => void;
 }
 
-export function ScoreboardScreen({ gameState, onProceed, onEditRound }: ScoreboardScreenProps) {
+export function ScoreboardScreen({
+  gameState,
+  onProceed,
+  onEditRound,
+  onEndGame,
+}: ScoreboardScreenProps) {
   const { rounds, currentRoundIndex, players } = gameState;
   const [editingRound, setEditingRound] = useState<number | null>(null);
 
@@ -23,11 +30,14 @@ export function ScoreboardScreen({ gameState, onProceed, onEditRound }: Scoreboa
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-2xl mx-auto space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Scoreboard</h1>
-          <span className="text-sm text-muted-foreground">
-            After Round {currentRoundIndex + 1}
-          </span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold leading-tight">Scoreboard</h1>
+            <span className="text-sm text-muted-foreground">
+              After Round {currentRoundIndex + 1}
+            </span>
+          </div>
+          <EndGameDialog onConfirm={onEndGame} />
         </div>
 
         <Card>
