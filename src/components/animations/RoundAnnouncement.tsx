@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { TRUMP_SUITS, SUIT_SYMBOLS, SUIT_COLORS, cardsInRound } from "@/types/game";
 
 interface RoundAnnouncementProps {
@@ -9,7 +10,6 @@ interface RoundAnnouncementProps {
   onDone: () => void;
 }
 
-const HOLD_MS = 1400;
 const EXIT_MS = 320;
 
 export function RoundAnnouncement({ roundIndex, dealerName, onDone }: RoundAnnouncementProps) {
@@ -17,26 +17,15 @@ export function RoundAnnouncement({ roundIndex, dealerName, onDone }: RoundAnnou
   const suit = TRUMP_SUITS[roundIndex];
   const cards = cardsInRound(roundIndex);
 
-  useEffect(() => {
-    const holdTimer = window.setTimeout(() => setExiting(true), HOLD_MS);
-    const doneTimer = window.setTimeout(onDone, HOLD_MS + EXIT_MS);
-    return () => {
-      window.clearTimeout(holdTimer);
-      window.clearTimeout(doneTimer);
-    };
-  }, [onDone]);
-
-  const skip = () => {
+  const dismiss = () => {
+    if (exiting) return;
     setExiting(true);
     window.setTimeout(onDone, EXIT_MS);
   };
 
   return (
     <div
-      onClick={skip}
-      role="button"
-      aria-label="Round announcement — tap to skip"
-      className={`fixed inset-0 z-50 flex items-center justify-center p-6 cursor-pointer ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-6 ${
         exiting ? "animate-fade-out" : "animate-fade-in"
       }`}
       style={{
@@ -46,7 +35,7 @@ export function RoundAnnouncement({ roundIndex, dealerName, onDone }: RoundAnnou
         WebkitBackdropFilter: "blur(14px)",
       }}
     >
-      <div className="flex flex-col items-center text-center max-w-sm">
+      <div className="flex flex-col items-center text-center max-w-sm w-full">
         <div
           className={`text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3 ${
             exiting ? "" : "animate-fly-up"
@@ -63,7 +52,10 @@ export function RoundAnnouncement({ roundIndex, dealerName, onDone }: RoundAnnou
             }`}
             aria-hidden
           >
-            <span className={exiting ? "" : "inline-block animate-suit-float"} style={{ animationDelay: "640ms" }}>
+            <span
+              className={exiting ? "" : "inline-block animate-suit-float"}
+              style={{ animationDelay: "640ms" }}
+            >
               {SUIT_SYMBOLS[suit]}
             </span>
           </div>
@@ -98,12 +90,16 @@ export function RoundAnnouncement({ roundIndex, dealerName, onDone }: RoundAnnou
         </div>
 
         <div
-          className={`mt-8 text-[11px] uppercase tracking-wider text-muted-foreground/70 ${
-            exiting ? "" : "animate-fade-in"
-          }`}
-          style={{ animationDelay: "900ms" }}
+          className={`mt-8 w-full ${exiting ? "" : "animate-fly-up"}`}
+          style={{ animationDelay: "780ms" }}
         >
-          tap to skip
+          <Button
+            onClick={dismiss}
+            className="w-full h-12 text-base font-semibold"
+            size="lg"
+          >
+            Start Round {roundIndex + 1}
+          </Button>
         </div>
       </div>
     </div>
