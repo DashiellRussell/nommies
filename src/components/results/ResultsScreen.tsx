@@ -55,7 +55,7 @@ export function ResultsScreen({
 
   return (
     <div className="min-h-screen p-3 pb-24">
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto animate-fly-up">
         <div className="flex items-center justify-end mb-2">
           <EndGameDialog onConfirm={onEndGame} />
         </div>
@@ -68,10 +68,10 @@ export function ResultsScreen({
 
         <Card
           className={cn(
-            "mb-3 border-2 transition-colors",
-            allFilled && valid && "border-emerald-500/40 bg-emerald-500/5",
-            allFilled && !valid && "border-destructive/60 bg-destructive/5",
-            !allFilled && "border-dashed"
+            "mb-3 border-2 transition-colors backdrop-blur-md",
+            allFilled && valid && "border-emerald-500/40 bg-emerald-500/10",
+            allFilled && !valid && "border-destructive/60 bg-destructive/10",
+            !allFilled && "border-dashed bg-card/70"
           )}
         >
           <CardContent className="p-3 flex items-center justify-between gap-3">
@@ -104,7 +104,7 @@ export function ResultsScreen({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card/80 backdrop-blur-md">
           <CardContent className="px-4 py-1 divide-y">
             {players.map((name, i) => (
               <HandsWonInput
@@ -120,10 +120,10 @@ export function ResultsScreen({
       </div>
 
       <div
-        className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur p-3 sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:mt-4"
+        className="fixed bottom-0 left-0 right-0 border-t bg-background/70 backdrop-blur-md p-3 sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:mt-4"
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-md mx-auto">
           <Button
             onClick={handleSubmit}
             disabled={!valid}

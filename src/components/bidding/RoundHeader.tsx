@@ -13,7 +13,7 @@ export function RoundHeader({ roundIndex, dealerName }: RoundHeaderProps) {
   return (
     <div className="mb-3 flex items-center gap-3">
       <div
-        className={`flex items-center justify-center h-12 w-12 rounded-xl bg-card border shadow-sm text-3xl shrink-0 ${SUIT_COLORS[suit]}`}
+        className={`flex items-center justify-center h-12 w-12 rounded-xl bg-card/70 backdrop-blur-md border shadow-sm text-3xl shrink-0 ${SUIT_COLORS[suit]}`}
         aria-hidden
       >
         {SUIT_SYMBOLS[suit]}

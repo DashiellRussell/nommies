@@ -37,7 +37,7 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-md shadow-lg animate-fly-up bg-card/80 backdrop-blur-md">
         <CardHeader className="text-center">
           <CardTitle className="text-4xl font-bold tracking-tight">Nommies</CardTitle>
           <CardDescription className="text-sm">

@@ -8,6 +8,7 @@ import { getBiddingOrder, forbiddenBidForLastBidder } from "@/lib/gameLogic";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { EndGameDialog } from "@/components/EndGameDialog";
+import { RoundAnnouncement } from "@/components/animations/RoundAnnouncement";
 import { RoundHeader } from "./RoundHeader";
 import { BidInput } from "./BidInput";
 
@@ -31,6 +32,7 @@ export function BiddingScreen({
   const biddingOrder = getBiddingOrder(currentRoundIndex, numPlayers);
 
   const [bidValues, setBidValues] = useState<Record<number, string>>({});
+  const [announcing, setAnnouncing] = useState(true);
 
   const updateBid = (playerIndex: number, value: string) => {
     setBidValues((prev) => ({ ...prev, [playerIndex]: value }));
@@ -89,7 +91,14 @@ export function BiddingScreen({
 
   return (
     <div className="min-h-screen p-3 pb-24">
-      <div className="max-w-md mx-auto">
+      {announcing && (
+        <RoundAnnouncement
+          roundIndex={currentRoundIndex}
+          dealerName={players[dealer]}
+          onDone={() => setAnnouncing(false)}
+        />
+      )}
+      <div className={cn("max-w-md mx-auto", announcing ? "opacity-0" : "animate-fly-up")}>
         <div className="flex items-center justify-between mb-2 -ml-2">
           <Button
             variant="ghost"
@@ -112,10 +121,10 @@ export function BiddingScreen({
 
         <Card
           className={cn(
-            "mb-3 border-2 transition-colors",
-            allBidsEntered && totalState === "exact" && "border-destructive/60 bg-destructive/5",
-            allBidsEntered && totalState !== "exact" && "border-emerald-500/40 bg-emerald-500/5",
-            !allBidsEntered && "border-dashed"
+            "mb-3 border-2 transition-colors backdrop-blur-md",
+            allBidsEntered && totalState === "exact" && "border-destructive/60 bg-destructive/10",
+            allBidsEntered && totalState !== "exact" && "border-emerald-500/40 bg-emerald-500/10",
+            !allBidsEntered && "border-dashed bg-card/70"
           )}
         >
           <CardContent className="p-3 flex items-center justify-between gap-3">
@@ -142,7 +151,7 @@ export function BiddingScreen({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-card/80 backdrop-blur-md">
           <CardContent className="px-4 py-1 divide-y">
             {biddingOrder.map((pi, orderIndex) => {
               const isLastBidder = orderIndex === biddingOrder.length - 1;
@@ -164,10 +173,13 @@ export function BiddingScreen({
       </div>
 
       <div
-        className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur p-3 sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:mt-4"
+        className={cn(
+          "fixed bottom-0 left-0 right-0 border-t bg-background/70 backdrop-blur-md p-3 sm:static sm:border-0 sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:mt-4 transition-opacity duration-300",
+          announcing && "opacity-0 pointer-events-none"
+        )}
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-md mx-auto">
           <Button
             onClick={handleSubmit}
             disabled={!isValid()}

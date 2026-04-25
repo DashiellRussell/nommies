@@ -102,3 +102,87 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+@keyframes nommies-fly-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nommies-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nommies-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes nommies-suit-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes nommies-suit-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fly-up {
+  animation: nommies-fly-up 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in {
+  animation: nommies-fade-in 280ms ease-out both;
+}
+
+.animate-fade-out {
+  animation: nommies-fade-out 320ms ease-in both;
+}
+
+.animate-suit-pop {
+  animation: nommies-suit-pop 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-suit-float {
+  animation: nommies-suit-float 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fly-up,
+  .animate-fade-in,
+  .animate-fade-out,
+  .animate-suit-pop,
+  .animate-suit-float {
+    animation: none !important;
+  }
+}

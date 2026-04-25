@@ -29,7 +29,7 @@ export function ScoreboardScreen({
 
   return (
     <div className="min-h-screen bg-background p-4">
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-2xl mx-auto space-y-4 animate-fly-up">
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
             <h1 className="text-2xl font-bold leading-tight">Scoreboard</h1>

@@ -29,8 +29,8 @@ export function GameOverScreen({ gameState, onNewGame, onEditRound }: GameOverSc
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen p-4">
+      <div className="max-w-2xl mx-auto space-y-6 animate-fly-up">
         <div className="text-center pt-4">
           <h1 className="text-3xl font-bold mb-1">Game Over!</h1>
           {winners.length === 1 ? (
